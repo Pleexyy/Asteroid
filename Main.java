@@ -16,8 +16,11 @@ public class Main {
         frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
         frame.setVisible(true);
 
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+
         while (true) {
             ag.repaint();
+            toolkit.sync();
             try {
                 Thread.sleep(1000 / 60);
             } catch (InterruptedException e) {

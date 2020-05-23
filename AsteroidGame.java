@@ -9,7 +9,7 @@ public class AsteroidGame extends JPanel implements KeyListener {
     private static final long serialVersionUID = 1L;
     private int rotation = 0;
     private int x1Ship, x2Ship, x3Ship, y1Ship, y2Ship, y3Ship;
-
+    private final ArrayList<Integer> pressedKeys = new ArrayList<>();
     private ArrayList<Laser> lasers = new ArrayList<Laser>();
 
     private Polygon ship = new Polygon();
@@ -27,6 +27,7 @@ public class AsteroidGame extends JPanel implements KeyListener {
         x1Ship = cntrX;
         x2Ship = cntrX - 20;
         x3Ship = cntrX + 20;
+
         y1Ship = cntrY - 60;
         y2Ship = cntrY + 15;
         y3Ship = cntrY + 15;
@@ -38,22 +39,17 @@ public class AsteroidGame extends JPanel implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        int k = e.getKeyCode();
-        if (k == KeyEvent.VK_LEFT) {
-            this.rotation -= 5;
-        }
-        if (k == KeyEvent.VK_RIGHT) {
-            this.rotation += 5;
-        }
-        if (k == KeyEvent.VK_SPACE) {
-            System.out.println("Fire ---" + ship.xpoints[0] + ";" + ship.ypoints[0]);
-            Laser laser = new Laser(ship.xpoints[0], ship.ypoints[0]);
-            lasers.add(laser);
+        if (pressedKeys.contains(e.getKeyCode()) == false) {
+            pressedKeys.add(e.getKeyCode());
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+        int index = pressedKeys.indexOf(e.getKeyCode());
+        if (index > -1) {
+            pressedKeys.remove(index);
+        }
     }
 
     @Override
@@ -69,12 +65,31 @@ public class AsteroidGame extends JPanel implements KeyListener {
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2d.setRenderingHints(rh);
 
+        g2d.setColor(Color.RED);
+        g2d.fillOval(400, 400, 3, 3);
+
         /* dessine le Ship */
         g2d.setColor(Color.WHITE);
         rotateShip(this.rotation);
         g2d.draw(ship);
+
         for (int i = 0; i < lasers.size(); i++) {
             lasers.get(i).drawLaser(g);
+            // Supprimer lorsque lasers sortent de l'écran (get x, y) ...
+        }
+
+        for (int i = 0; i < pressedKeys.size(); i++) {
+            int k = pressedKeys.get(i);
+            if (k == KeyEvent.VK_LEFT) {
+                this.rotation -= 5;
+            }
+            if (k == KeyEvent.VK_RIGHT) {
+                this.rotation += 5;
+            }
+            if (k == KeyEvent.VK_SPACE) {
+                Laser laser = new Laser(ship.xpoints[0], ship.ypoints[0]);
+                lasers.add(laser);
+            }
         }
     }
 
