@@ -1,9 +1,7 @@
 import java.awt.*;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.lang.Thread;
 import java.util.ArrayList;
 import java.awt.geom.AffineTransform;
 
@@ -41,10 +39,10 @@ public class AsteroidGame extends JPanel implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int k = e.getKeyCode();
-        if (k == KeyEvent.VK_A) {
+        if (k == KeyEvent.VK_LEFT) {
             this.rotation -= 5;
         }
-        if (k == KeyEvent.VK_E) {
+        if (k == KeyEvent.VK_RIGHT) {
             this.rotation += 5;
         }
         if (k == KeyEvent.VK_SPACE) {
@@ -66,7 +64,7 @@ public class AsteroidGame extends JPanel implements KeyListener {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
 
-        // active l'antialiasing 
+        // active l'antialiasing
         RenderingHints rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2d.setRenderingHints(rh);
@@ -96,28 +94,6 @@ public class AsteroidGame extends JPanel implements KeyListener {
         ship.addPoint(p1.x, p1.y);
         ship.addPoint(p2.x, p2.y);
         ship.addPoint(p3.x, p3.y);
-    }
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Asteroid");
-        frame.setSize(800, 800);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false);
-        Container contentPane = frame.getContentPane();
-        AsteroidGame ag = new AsteroidGame(800, 800);
-        contentPane.add(ag);
-        // permet de centrer la frame au milieu de l'écran
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
-        frame.setVisible(true);
-
-        while (true) {
-            ag.repaint();
-            try {
-                Thread.sleep(1000 / 60);
-            } catch (InterruptedException e) {
-            }
-        }
     }
 
 }
