@@ -15,6 +15,7 @@ public class AsteroidGame extends JPanel implements KeyListener {
     private final ArrayList<Integer> pressedKeys = new ArrayList<>();
     private ArrayList<Laser> lasers = new ArrayList<Laser>();
     private Polygon ship = new Polygon();
+    private Asteroid asteroid = new Asteroid(200, 200);
 
     public AsteroidGame(int width, int height) {
         super();
@@ -37,6 +38,9 @@ public class AsteroidGame extends JPanel implements KeyListener {
         ship.addPoint(x1Ship, y1Ship);
         ship.addPoint(x2Ship, y2Ship);
         ship.addPoint(x3Ship, y3Ship);
+
+        
+
     }
 
     @Override
@@ -70,13 +74,11 @@ public class AsteroidGame extends JPanel implements KeyListener {
         g2d.setColor(Color.RED);
         g2d.fillOval(400, 400, 3, 3);
 
-        // dessine premier asteroide
-        g2d.drawRect(375, 50, 50, 50);
-
         /* dessine le Ship */
         g2d.setColor(Color.WHITE);
         rotateShip(this.rotation);
         g2d.draw(ship);
+        asteroid.drawAsteroid(g);
         for (int i = 0; i < lasers.size(); i++) {
             Laser laser = lasers.get(i);
 
@@ -84,7 +86,10 @@ public class AsteroidGame extends JPanel implements KeyListener {
             // si le laser sort de l'écran, on le supprime de la liste
             if (laser.getX() > 800 || laser.getY() > 800 || laser.getX() < 0 || laser.getY() < 0) {
                 lasers.remove(i);
-                System.out.println("Laser supprimé");
+            }
+            // asteroid dans liste 
+            if (asteroid.contains(laser.getX(), laser.getY()) == true) {
+                System.out.println("Collision");
             }
         }
 
