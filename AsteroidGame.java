@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.awt.geom.AffineTransform;
 
 public class AsteroidGame extends JPanel implements KeyListener {
-    private static final long serialVersionUID = 1L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 913853861154657373L;
     private int rotation = 0;
     private int x1Ship, x2Ship, x3Ship, y1Ship, y2Ship, y3Ship;
     private final ArrayList<Integer> pressedKeys = new ArrayList<>();
     private ArrayList<Laser> lasers = new ArrayList<Laser>();
-
     private Polygon ship = new Polygon();
 
     public AsteroidGame(int width, int height) {
@@ -68,14 +70,22 @@ public class AsteroidGame extends JPanel implements KeyListener {
         g2d.setColor(Color.RED);
         g2d.fillOval(400, 400, 3, 3);
 
+        // dessine premier asteroide
+        g2d.drawRect(375, 50, 50, 50);
+
         /* dessine le Ship */
         g2d.setColor(Color.WHITE);
         rotateShip(this.rotation);
         g2d.draw(ship);
-
         for (int i = 0; i < lasers.size(); i++) {
-            lasers.get(i).drawLaser(g);
-            // Supprimer lorsque lasers sortent de l'écran (get x, y) ...
+            Laser laser = lasers.get(i);
+
+            laser.drawLaser(g);
+            // si le laser sort de l'écran, on le supprime de la liste
+            if (laser.getX() > 800 || laser.getY() > 800 || laser.getX() < 0 || laser.getY() < 0) {
+                lasers.remove(i);
+                System.out.println("Laser supprimé");
+            }
         }
 
         for (int i = 0; i < pressedKeys.size(); i++) {

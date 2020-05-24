@@ -1,7 +1,7 @@
 import java.awt.*;
 
 public class Laser {
-    private double dx, dy;
+    private double dx, dy, x, y;
     Point p;
     private static final double SPEED = 0.1;
 
@@ -11,12 +11,15 @@ public class Laser {
         p = new Point(xMissile, yMissile);
     }
 
-    protected void updatePosition() {
-        double x = p.x + dx * SPEED;
-        double y = p.y + dy * SPEED;
+    public Laser() {
+	}
+
+	protected void updatePosition() {
+        x = p.x + dx * SPEED;
+        y = p.y + dy * SPEED;
         p.setLocation(x, y);
     }
-
+    
     public void drawLaser(Graphics g) {
         /* Draw Missile */
         Graphics2D g2d = (Graphics2D) g;
@@ -24,4 +27,13 @@ public class Laser {
         g2d.fillOval(p.x, p.y, 5, 5);
         updatePosition();
     }
+
+    public double getX() {
+        return p.getX();
+    }
+
+    public double getY() {
+        return p.getY();
+    }
+
 }
