@@ -12,14 +12,14 @@ public class Laser {
     }
 
     public Laser() {
-	}
+    }
 
-	protected void updatePosition() {
+    protected void updatePosition() {
         x = p.x + dx * SPEED;
         y = p.y + dy * SPEED;
         p.setLocation(x, y);
     }
-    
+
     public void drawLaser(Graphics g) {
         /* Draw Missile */
         Graphics2D g2d = (Graphics2D) g;

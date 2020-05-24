@@ -2,7 +2,10 @@ import java.awt.*;
 import javax.swing.JPanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.Timer;
 import java.awt.geom.AffineTransform;
 
 public class AsteroidGame extends JPanel implements KeyListener {
@@ -15,7 +18,7 @@ public class AsteroidGame extends JPanel implements KeyListener {
     private final ArrayList<Integer> pressedKeys = new ArrayList<>();
     private ArrayList<Laser> lasers = new ArrayList<Laser>();
     private Polygon ship = new Polygon();
-    private Asteroid asteroid = new Asteroid(200, 200);
+    private ArrayList<Asteroid> asteroids = new ArrayList<Asteroid>();
 
     public AsteroidGame(int width, int height) {
         super();
@@ -39,8 +42,26 @@ public class AsteroidGame extends JPanel implements KeyListener {
         ship.addPoint(x2Ship, y2Ship);
         ship.addPoint(x3Ship, y3Ship);
 
-        
+        // ajout de 3 astéroidess à notre liste, à des positions aléatoires
+        // (dans le constructeur pour éviter d'en ajouter 60 par seconde)
+        Timer timer = new Timer(2000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int max = 750;
+                int min = 1;
+                int range = max - min + 1;
 
+                for (int i = 0; i < 3; i++) {
+                    int randx = (int) (Math.random() * range) + min;
+                    int randy = (int) (Math.random() * range) + min;
+
+                    Asteroid asteroid = new Asteroid(randx, randy);
+                    asteroids.add(asteroid);
+                }
+            }
+        });
+        timer.setRepeats(true);
+        timer.start();
     }
 
     @Override
@@ -56,6 +77,10 @@ public class AsteroidGame extends JPanel implements KeyListener {
         if (index > -1) {
             pressedKeys.remove(index);
         }
+        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            Laser laser = new Laser(ship.xpoints[0], ship.ypoints[0]);
+            lasers.add(laser);
+        }
     }
 
     @Override
@@ -67,9 +92,10 @@ public class AsteroidGame extends JPanel implements KeyListener {
         Graphics2D g2d = (Graphics2D) g;
 
         // active l'antialiasing
-        RenderingHints rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,
-                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        g2d.setRenderingHints(rh);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // active l'antialiasing pour le texte
+        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
         g2d.setColor(Color.RED);
         g2d.fillOval(400, 400, 3, 3);
@@ -78,18 +104,33 @@ public class AsteroidGame extends JPanel implements KeyListener {
         g2d.setColor(Color.WHITE);
         rotateShip(this.rotation);
         g2d.draw(ship);
-        asteroid.drawAsteroid(g);
+
+        // boucle d'affichage des astéroides
+        for (int j = 0; j < asteroids.size(); j++) {
+            asteroids.get(j).drawAsteroid(g);
+        }
+
+        // boucle d'affichage des lasers
         for (int i = 0; i < lasers.size(); i++) {
             Laser laser = lasers.get(i);
-
             laser.drawLaser(g);
+        }
+
+        for (int i = 0; i < lasers.size(); i++) {
+            Laser laser = lasers.get(i);
             // si le laser sort de l'écran, on le supprime de la liste
             if (laser.getX() > 800 || laser.getY() > 800 || laser.getX() < 0 || laser.getY() < 0) {
                 lasers.remove(i);
             }
-            // asteroid dans liste 
-            if (asteroid.contains(laser.getX(), laser.getY()) == true) {
-                System.out.println("Collision");
+            for (int j = 0; j < asteroids.size(); j++) {
+                // si le missile touche l'asteroid, elle est détruite
+                if (asteroids.get(j).contains(laser.getX(), laser.getY()) == true) {
+                    // supprime l'astéroide de la liste
+                    asteroids.remove(j);
+                    // supprime le laser de la liste. Le laser est donc supprimé s'il touche une
+                    // cible
+                    lasers.remove(i);
+                }
             }
         }
 
@@ -100,10 +141,6 @@ public class AsteroidGame extends JPanel implements KeyListener {
             }
             if (k == KeyEvent.VK_RIGHT) {
                 this.rotation += 5;
-            }
-            if (k == KeyEvent.VK_SPACE) {
-                Laser laser = new Laser(ship.xpoints[0], ship.ypoints[0]);
-                lasers.add(laser);
             }
         }
     }
