@@ -12,7 +12,7 @@ public class Asteroid {
     }
 
     public void drawAsteroid(Graphics g) {
-        /* Draw Asteroid */
+        /* Dessine l'asteroide */
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.RED);
         g2d.draw(asteroid);

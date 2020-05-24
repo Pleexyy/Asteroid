@@ -21,7 +21,7 @@ public class Laser {
     }
 
     public void drawLaser(Graphics g) {
-        /* Draw Missile */
+        /* Dessine le missile */
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.GREEN);
         g2d.fillOval(p.x, p.y, 5, 5);

@@ -1,4 +1,8 @@
 import java.awt.*;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -19,6 +23,8 @@ public class AsteroidGame extends JPanel implements KeyListener {
     private ArrayList<Laser> lasers = new ArrayList<Laser>();
     private Polygon ship = new Polygon();
     private ArrayList<Asteroid> asteroids = new ArrayList<Asteroid>();
+    private JLabel scoreLabel, timeLabel;
+    private int score = 0;
 
     public AsteroidGame(int width, int height) {
         super();
@@ -62,6 +68,17 @@ public class AsteroidGame extends JPanel implements KeyListener {
         });
         timer.setRepeats(true);
         timer.start();
+
+        scoreLabel = new JLabel("Score : 0");
+        scoreLabel.setForeground(Color.white);
+
+        add(scoreLabel);
+
+        timeLabel = new JLabel();
+        timeLabel.setForeground(Color.white);
+        timer();
+        add(timeLabel);
+
     }
 
     @Override
@@ -130,6 +147,8 @@ public class AsteroidGame extends JPanel implements KeyListener {
                     // supprime le laser de la liste. Le laser est donc supprimé s'il touche une
                     // cible
                     lasers.remove(i);
+                    // incrémente le score dès qu'un astéroide est touché
+                    scoreValue();
                 }
             }
         }
@@ -161,6 +180,51 @@ public class AsteroidGame extends JPanel implements KeyListener {
         ship.addPoint(p1.x, p1.y);
         ship.addPoint(p2.x, p2.y);
         ship.addPoint(p3.x, p3.y);
+    }
+
+    public void scoreValue() {
+        score++;
+        scoreLabel.setText("Score : " + score);
+    }
+
+    private void timer() {
+        new Thread() {
+            int counter = 30;
+
+            public void run() {
+                while (counter >= 0) {
+                    timeLabel.setText("Temps restant : " + (counter--));
+                    try {
+                        Thread.sleep(1000);
+                        // appelle la fonction endgame si le temps est écoulé
+                        if (counter == 0) {
+                            endGame();
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+            }
+        }.start();
+    }
+
+    private void endGame() {
+        // supprime la fenetre du jeu
+        Main.getFrame().dispose();
+        JFrame frame2 = new JFrame();
+        // affiche une boite de dialogue qui permet à l'utilisateur de re-commencer ou
+        // quitter le jeu
+        Object[] options = { "Recommencer", "Quitter" };
+        int n = JOptionPane.showOptionDialog(frame2, "Le jeu est terminé ! Votre score est de " + score, "",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        System.out.println("Fin de la partie");
+        if (n == 0) {
+            // System.exit(0); // temporaire. Le jeu est sensé recommencer
+            // String[] arguments = new String[] {"0"};
+            // Main.main(arguments);
+            // new Main();
+            System.exit(0);
+        } else
+            System.exit(0);
     }
 
 }
