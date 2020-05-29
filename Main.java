@@ -10,7 +10,6 @@ public class Main {
         // if (args[0].equals("0")) {
         // frame.dispose();
         // }
-
         frame.setSize(800, 800);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
