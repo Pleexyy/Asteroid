@@ -25,6 +25,12 @@ public class AsteroidGame extends JPanel implements KeyListener {
     private ArrayList<Asteroid> asteroids = new ArrayList<Asteroid>();
     private JLabel scoreLabel, timeLabel;
     private int score = 0;
+    int minX = 0;
+    int maxX = 0;
+    int minY = 0;
+    int maxY = 0;
+    int zoneMin = 0;
+    int zoneMax = 0;
 
     public AsteroidGame(int width, int height) {
         super();
@@ -48,22 +54,101 @@ public class AsteroidGame extends JPanel implements KeyListener {
         ship.addPoint(x2Ship, y2Ship);
         ship.addPoint(x3Ship, y3Ship);
 
-        // ajout de 3 astéroidess à notre liste, à des positions aléatoires
+        // ajout d'astéroides à notre liste, à des positions aléatoires
         // (dans le constructeur pour éviter d'en ajouter 60 par seconde)
+
         Timer timer = new Timer(2000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int max = 750;
-                int min = 1;
-                int range = max - min + 1;
+                minX = 1;
+                maxX = 750;
 
-                for (int i = 0; i < 3; i++) {
-                    int randx = (int) (Math.random() * range) + min;
-                    int randy = (int) (Math.random() * range) + min;
+                minY = 1;
+                maxY = 750;
 
-                    Asteroid asteroid = new Asteroid(randx, randy);
-                    asteroids.add(asteroid);
+                // la fenetre du jeu est divisée en 8 zones
+                zoneMin = 1;
+                zoneMax = 8;
+
+                int rangeZone = zoneMax - zoneMin + 1;
+                // generation d'une zone aléatoire
+
+                int randZone = (int) (Math.random() * rangeZone) + zoneMin;
+
+                System.out.println("Zone : " + randZone);
+
+                // delimitation des axes (x et y) en fonction de la zone tirée au sort
+                switch (randZone) {
+                    case 1:
+                        minX = 1;
+                        maxX = 250;
+
+                        minY = 1;
+                        maxY = 250;
+                        break;
+                    case 2:
+                        minX = 250;
+                        maxX = 500;
+
+                        minY = 1;
+                        maxY = 250;
+                        break;
+                    case 3:
+                        minX = 500;
+                        maxX = 750;
+
+                        minY = 1;
+                        maxY = 250;
+                        break;
+                    case 4:
+                        minX = 1;
+                        maxX = 250;
+
+                        minY = 250;
+                        maxY = 500;
+                        break;
+                    case 5:
+                        minX = 500;
+                        maxX = 750;
+
+                        minY = 250;
+                        maxY = 500;
+                        break;
+                    case 6:
+                        minX = 1;
+                        maxX = 250;
+
+                        minY = 500;
+                        maxY = 750;
+                        break;
+                    case 7:
+                        minX = 250;
+                        maxX = 500;
+
+                        minY = 500;
+                        maxY = 750;
+                        break;
+                    case 8:
+                        minX = 500;
+                        maxX = 750;
+
+                        minY = 500;
+                        maxY = 750;
+                        break;
                 }
+
+                int rangeX = maxX - minX + 1;
+                int rangeY = maxY - minY + 1;
+
+                // generation des coordonnées alétoires en fonction de la zone tirée au sort
+
+                // for (int i = 0; i < 2; i++) {
+                int randx = (int) (Math.random() * rangeX) + minX;
+                int randy = (int) (Math.random() * rangeY) + minY;
+
+                Asteroid asteroid = new Asteroid(randx, randy);
+                asteroids.add(asteroid);
+                // }
             }
         });
         timer.setRepeats(true);
